@@ -1,4 +1,5 @@
-# scratcher
+# Scratcher
+## Scratch and win
 huehuehue
 
 clone and run
