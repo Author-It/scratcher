@@ -14,20 +14,20 @@ interface meow {
     time: number;
 }
 
-router.post("/", async (req:Request, res:Response) => {
+router.post("/", async (req: Request, res: Response) => {
     if (!req.body.encrypted) return res.status(403).send("INVALID REQUEST FORMAT");
 
-    const encrypted = req.body.encrypted;
-    
-    const decrypted = await decryptRSA(encrypted);
-    const obj:meow = JSON.parse(decrypted);
-    let a = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('').toUpperCase();
-
-    if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT")
-
-    logger.success("New Account Created: " + obj.uid);
     let conn;
     try {
+        const encrypted = req.body.encrypted;
+        const decrypted = await decryptRSA(encrypted);
+        const obj: meow = JSON.parse(decrypted);
+        let a = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('').toUpperCase();
+
+        if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT")
+
+        logger.success("New Account Created: " + obj.uid);
+
         conn = await pool.getConnection();
         const findUID = await conn.query(`SELECT * FROM users WHERE uid=?`, [obj.uid]);
         const findDeviceID = await conn.query(`SELECT * FROM users WHERE deviceID=?`, [obj.deviceID]);
@@ -40,7 +40,7 @@ router.post("/", async (req:Request, res:Response) => {
         await conn.query(`INSERT INTO users (uid, referral, deviceID) VALUES (?, ?, ?)`, [obj.uid, a, obj.deviceID]);
         res.status(201).send("Data Creation Success!");
     } catch (error) {
-        console.log(error)   
+        console.log(error)
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
         if (conn) conn.release();
