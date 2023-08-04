@@ -8,14 +8,17 @@ const logger = require("../../utils/logger");
 const router = Router();
 
 router.get(
-    "/getinfo",
+    "/getinfo:uid",
     async (req:Request, res:Response) => {
+
+        const uid = req.params.uid;
 
         let conn;
         try {
             conn = await pool.getConnection();
-            const get = await conn.query(`SELECT * FROM users;`);
+            const get = await conn.query(`SELECT * FROM users WHERE uid=?;`, [uid]);
 
+            if (!get[0]) return res.send("INVALID UID")
             // Object.assign(get[0]);
 
             res.json(get[0]);
