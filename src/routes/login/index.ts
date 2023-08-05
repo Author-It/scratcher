@@ -24,7 +24,13 @@ router.post("/", async (req: Request, res: Response) => {
         const obj: meow = JSON.parse(decrypted);
         let a = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('').toUpperCase();
 
-        if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT")
+        conn = await pool.getConnection();
+        if (obj.fingerprint != process.env.FINGERPRINT) {
+            
+            conn.query(`UPDATE admin SET fingerprintCount=fingerprintCount+1 WHERE id=1`);
+            res.send("INVALID APP FINGERPRINT");
+            return;
+        }
 
         logger.success("New Account Created: " + obj.uid);
 
