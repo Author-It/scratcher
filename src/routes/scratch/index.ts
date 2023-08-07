@@ -3,7 +3,7 @@ config();
 
 import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../../client/database";
-import { decryptRSA } from "../../utils/functions";
+import { addPointsHistory, decryptRSA } from "../../utils/functions";
 const logger = require("../../utils/logger.js");
 
 const router = Router();
@@ -50,6 +50,7 @@ router.put(
             await conn.query(`UPDATE users SET points=points+?,tickets=tickets-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, res.locals.uid, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
 
             res.send(`CONGRATULATIONS! YOU WON ${get[0].nextWinning} points!`);
+            addPointsHistory(res.locals.uid, get[0].nextWinning, "scratch", "Scratch");
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");
