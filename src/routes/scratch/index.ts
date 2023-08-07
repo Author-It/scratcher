@@ -63,7 +63,7 @@ router.put(
             }
             res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
         } finally {
-            if (conn) await conn.release()
+            if (conn) await conn.release();
         }
     }
 );
