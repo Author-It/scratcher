@@ -30,7 +30,7 @@ router.get(
                 logger.error("====================================");
             } else {
                 logger.error("====================================");
-                logger.error("UNEDPECTED ERROR");
+                logger.error("UNEXPECTED ERROR");
                 logger.error("====================================");
             }
             res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");

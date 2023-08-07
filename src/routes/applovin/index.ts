@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 config();
 
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 import { sha1 } from "node-forge"
 import { pool } from "../../client/database";
 import { addPointsHistory } from "../../utils/functions";
@@ -9,7 +9,7 @@ const logger = require("../../utils/logger.js");
 
 const router = Router();
 
-router.get("/tickets", async (req, res) => {
+router.get("/tickets", async (req:Request, res:Response) => {
     const userID = req.query.user_id;
     const event = req.query.event;
     const eventToekn = req.query.token;
@@ -35,7 +35,7 @@ router.get("/tickets", async (req, res) => {
             logger.error("====================================");
         } else {
             logger.error("====================================");
-            logger.error("UNEDPECTED ERROR");
+            logger.error("UNEXPECTED ERROR");
             logger.error("====================================");
         }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
