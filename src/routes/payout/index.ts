@@ -78,8 +78,17 @@ router.post(
             logger.success(`Payout requested by ${res.locals.uid}`)
             res.status(201).send("PAYOUT SUCCESSFULLY REQUESTED.")
         } catch (error) {
-            console.log(error);
-            res.status(500).send("ERROR FEEDING DATA INTO THE DATABASE")
+            if (error instanceof Error) {
+                logger.error("====================================");
+                logger.error(error.name);
+                logger.error(error.message);
+                logger.error("====================================");
+            } else {
+                logger.error("====================================");
+                logger.error("UNEDPECTED ERROR");
+                logger.error("====================================");
+            }
+            res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
         } finally {
             if (conn) await conn.release();
         }

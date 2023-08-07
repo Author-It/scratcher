@@ -46,7 +46,16 @@ router.post("/", async (req: Request, res: Response) => {
         await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
         res.status(201).send("Data Creation Success!");
     } catch (error) {
-        console.log(error)
+        if (error instanceof Error) {
+            logger.error("====================================");
+            logger.error(error.name);
+            logger.error(error.message);
+            logger.error("====================================");
+        } else {
+            logger.error("====================================");
+            logger.error("UNEDPECTED ERROR");
+            logger.error("====================================");
+        }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
         if (conn) await conn.release();

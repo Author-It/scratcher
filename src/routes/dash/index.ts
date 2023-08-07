@@ -33,6 +33,7 @@ router.get(
                 logger.error("UNEDPECTED ERROR");
                 logger.error("====================================");
             }
+            res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
         } finally {
             if (conn) await conn.release();
         }
