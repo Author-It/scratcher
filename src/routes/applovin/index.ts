@@ -17,7 +17,11 @@ router.get("/tickets", async (req, res) => {
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
 
-    if (toCheck != eventToekn) { res.status(400).send("Bad Request"); logger.warn("Bad SHA"); return; };
+    if (toCheck != eventToekn) { 
+        res.status(400).send("Bad Request"); 
+        logger.warn("Bad SHA"); 
+        return; 
+    };
 
     let conn;
     try {
