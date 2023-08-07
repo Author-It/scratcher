@@ -34,7 +34,7 @@ router.get(
                 logger.error("====================================");
             }
         } finally {
-            if (conn) conn.release();
+            if (conn) await conn.release();
         }
     }
 );

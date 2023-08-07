@@ -30,7 +30,7 @@ router.get(
         } catch (error) {
             console.log(error)
         } finally {
-            if (conn) conn.release();
+            if (conn) await conn.release();
         }
     }
 );
@@ -81,7 +81,7 @@ router.post(
             console.log(error);
             res.status(500).send("ERROR FEEDING DATA INTO THE DATABASE")
         } finally {
-            if (conn) conn.release();
+            if (conn) await conn.release();
         }
     }
 );

@@ -43,13 +43,13 @@ router.post("/", async (req: Request, res: Response) => {
         if (findRef[0]) a = a.replace(a[0], "0");
         if (findUID[0]) return res.status(409).send("ACCOUNT ALREADY EXISTS WITH THIS EMAIL");
 
-        await conn.query(`INSERT INTO users (uid, referral, deviceID) VALUES (?, ?, ?)`, [obj.uid, a, obj.deviceID]);
+        await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
         res.status(201).send("Data Creation Success!");
     } catch (error) {
         console.log(error)
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
-        if (conn) conn.release();
+        if (conn) await conn.release();
     }
 })
 
