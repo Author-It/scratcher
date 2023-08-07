@@ -12,7 +12,7 @@ router.use("/payout", payoutRoute);
 router.use("/scratch", scratchRoute);
 
 router.get("/", async (req, res) => {
-    res.send("WELCOME TO OUR API!! 🌏🌏🌏")
+    res.send("WELCOME TO OUR API!! 🌏🌏🌏");
 });
 
 export default router;

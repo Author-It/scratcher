@@ -28,12 +28,12 @@ router.put(
             if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT");
             if (obj.time + 5 > Date.now()) return res.status(409).send("REQUEST TIMED OUT");
 
-            res.locals.uid = obj.uid
+            res.locals.uid = obj.uid;
 
-            next()
+            next();
         } catch (err) {
-            console.log(err)
-            res.status(409).send(":)")
+            console.log(err);
+            res.status(409).send(":)");
         }
     },
     async (req: Request, res:Response) => {
