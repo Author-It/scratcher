@@ -11,7 +11,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     
     console.log("AYAYAYAYAYAYA")
-    res.send("SOON™");
+    res.send(1);
 });
 
 export default router;
