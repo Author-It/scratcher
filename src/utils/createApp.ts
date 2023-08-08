@@ -14,7 +14,7 @@ export function createApp(): Express {
     app.use('/api', routes);
 
     app.get("/", (req, res) => {
-        "Works"
+        res.send("Works");
     });
 
     return app;
