@@ -22,17 +22,16 @@ router.post("/", async (req: Request, res: Response) => {
         const encrypted = req.body.encrypted;
         const decrypted = await decryptRSA(encrypted);
         const obj: meow = JSON.parse(decrypted);
+
         let a = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('').toUpperCase();
 
         conn = await pool.getConnection();
         if (obj.fingerprint != process.env.FINGERPRINT) {
             
-            conn.query(`UPDATE admin SET fingerprintCount=fingerprintCount+1 WHERE id=1`);
+            await conn.query(`UPDATE admin SET fingerprintCount=fingerprintCount+1 WHERE id=1`);
             res.send("INVALID APP FINGERPRINT");
             return;
         }
-
-        logger.success("New Account Created: " + obj.uid);
 
         conn = await pool.getConnection();
         const findUID = await conn.query(`SELECT * FROM users WHERE uid=?`, [obj.uid]);
@@ -45,6 +44,7 @@ router.post("/", async (req: Request, res: Response) => {
 
         await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
         res.status(201).send("Data Creation Success!");
+        logger.success("New Account Created: " + obj.uid);
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");
