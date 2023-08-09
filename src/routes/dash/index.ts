@@ -8,7 +8,7 @@ const logger = require("../../utils/logger");
 const router = Router();
 
 router.get(
-    "/getinfo:uid",
+    "/getinfo/:uid",
     async (req:Request, res:Response) => {
 
         const uid = req.params.uid;
