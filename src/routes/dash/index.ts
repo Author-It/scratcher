@@ -7,9 +7,7 @@ import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
 
-router.get(
-    "/getinfo/:uid",
-    async (req:Request, res:Response) => {
+router.get("/getinfo/:uid", async (req:Request, res:Response) => {
 
         const uid = req.params.uid;
 
@@ -39,5 +37,9 @@ router.get(
         }
     }
 );
+
+router.get("/", async (req, res) => {
+    res.send("hmmmmmmmm");
+});
 
 export default router;
