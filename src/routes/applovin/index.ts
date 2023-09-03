@@ -15,7 +15,7 @@ router.get("/tickets_3", async (req:Request, res:Response) => {
     const eventToekn = req.query.token;
     if (!userID || !event || !eventToekn) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
 
-    const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
+    const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString();
 
     if (toCheck != eventToekn) { 
         res.status(400).send("Bad Request"); 

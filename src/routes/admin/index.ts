@@ -11,7 +11,7 @@ router.get("/reset/day/:pass", async (req, res) => {
 
     const pass = req.params.pass;
 
-    if (pass != process.env.PASSWORD) return res.status(403).send("ERROR")
+    if (pass != process.env.PASSWORD) return res.status(403).send("ERROR");
 
     let conn;
     try {
