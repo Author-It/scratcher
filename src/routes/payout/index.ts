@@ -58,6 +58,8 @@ router.post(
 
             await conn.query(`INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
             await conn.query(`UPDATE users SET points=points-?,payoutLock=1 WHERE uid=?`, [res.locals.amount * 50000, res.locals.uid]);
+            await conn.query(`UPDATE admin SET totalPayout=totalPayout+? WHERE 1`, [res.locals.amount]);
+            
             logger.success(`Payout requested by ${res.locals.uid}`);
             res.status(201).send("PAYOUT SUCCESSFULLY REQUESTED.");
         } catch (error) {

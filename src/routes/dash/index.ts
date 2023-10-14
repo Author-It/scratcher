@@ -22,7 +22,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         conn = await pool.getConnection();
         const get = await conn.query(`SELECT * FROM users WHERE uid=?;`, [uid]);
 
-        if (!get[0]) return res.send("INVALID UID")
+        if (!get[0]) return res.status(400).send("INVALID UID")
         // Object.assign(get[0]);
 
         res.json(get[0]);
@@ -41,8 +41,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
     } finally {
         if (conn) await conn.release();
     }
-}
-);
+});
 
 router.put(
     "/claimstreak",
@@ -53,7 +52,7 @@ router.put(
             const decrypted = await decryptRSA(encrypted);
             const obj: meow = JSON.parse(decrypted);
 
-            if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT");
+            if (obj.fingerprint != process.env.FINGERPRINT) return res.status(403).send("INVALID APP FINGERPRINT");
             if (obj.time + 5 > Date.now()) return res.status(409).send("REQUEST TIMED OUT");
 
             res.locals.uid = obj.uid;
