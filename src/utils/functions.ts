@@ -1,5 +1,5 @@
 import forge from "node-forge"
-import { PRIVATE_KEY } from "./constants"
+import { PRIVATE_KEY, weightedProbabilities } from "./constants"
 import { pool } from "../client/database"
 
 export async function decryptRSA(encryptedBase64: string) {
@@ -44,4 +44,16 @@ export async function addPointsHistory(
     } finally {
         if (conn) conn.release();
     }
+}
+
+function weightedRand2(spec: any) {
+    var i, sum = 0, r = Math.random();
+    for (i in spec) {
+        sum += spec[i];
+        if (r <= sum) return i;
+    }
+}
+
+export function getNextAmt() {
+    return weightedRand2(weightedProbabilities);
 }

@@ -3,7 +3,7 @@ config();
 
 import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../../client/database";
-import { addPointsHistory, decryptRSA } from "../../utils/functions";
+import { addPointsHistory, decryptRSA, getNextAmt } from "../../utils/functions";
 const logger = require("../../utils/logger.js");
 
 const router = Router();
@@ -43,14 +43,18 @@ router.put(
             conn = await pool.getConnection()
 
             const get = await conn.query(`SELECT * FROM users WHERE uid=?`, [res.locals.uid]);
-            
             if (!get[0]) return res.status(403).send("INVALID UID");
+
             if (get[0].tickets < 0) return res.status(403).send("NOT ENOUGH TICKETS TO OBTAIN A SCRATCH CARD");
 
-            await conn.query(`UPDATE users SET points=points+?,tickets=tickets-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, res.locals.uid, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
+            const nw = get[0].nextWinning
+            await conn.query(`UPDATE users SET points=points+?,tickets=tickets-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, res.locals.uid, getNextAmt()]);
 
-            res.send(`CONGRATULATIONS! YOU WON ${get[0].nextWinning} points!`);
+            const get2 = await conn.query(`SELECT * FROM users WHERE uid=?`, [res.locals.uid]);
+
+            res.send({msg: `CONGRATULATIONS YOU WON ${nw} POINTS!`, data: get2[0]});
             addPointsHistory(res.locals.uid, get[0].nextWinning, "scratch", "Scratch");
+            
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");

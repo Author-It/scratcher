@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 import { Router, Request, Response } from "express";
-import { decryptRSA } from "../../utils/functions";
+import { decryptRSA, getNextAmt } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
@@ -15,6 +15,7 @@ interface meow {
 }
 
 router.post("/", async (req: Request, res: Response) => {
+
     if (!req.body.encrypted) return res.status(403).send("INVALID REQUEST FORMAT");
 
     let conn;
@@ -42,9 +43,10 @@ router.post("/", async (req: Request, res: Response) => {
         if (findRef[0]) a = a.replace(a[0], "0");
         if (findUID[0]) return res.status(409).send("ACCOUNT ALREADY EXISTS WITH THIS EMAIL");
 
-        await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, Math.floor(Math.random() * (10 - 1 + 1) + 1)]);
+        await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, getNextAmt()]);
         res.status(201).send("Data Creation Success!");
         logger.success("New Account Created: " + obj.uid);
+
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");
