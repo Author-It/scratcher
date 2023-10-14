@@ -70,12 +70,11 @@ router.put(
             conn = await pool.getConnection();
 
             const user = await conn.query(`SELECT daily FROM users WHERE uid=?`, [res.locals.uid]);
-            const admin = await conn.query(`SELECT day FROM admin WHERE id=1`);
 
-            if (!user[0]) return res.status(409).send("INVALID REFERRAL CODE");
-            if (user[0].daily === admin[0].day) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
+            if (!user[0]) return res.status(409).send("BAD REQUEST");
+            if (user[0].daily === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
 
-            await conn.query(`UPDATE users SET points=points+100,daily=? WHERE uid=?`, [admin[0].day, res.locals.uid]);
+            await conn.query(`UPDATE users SET points=points+100,daily=1 WHERE uid=?`, [res.locals.uid]);
             res.send("DAILY REWARD CLAIMED SUCCESSFULLY!");
         } catch (error) {
             if (error instanceof Error) {

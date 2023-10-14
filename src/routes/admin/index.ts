@@ -17,11 +17,11 @@ router.get("/reset/day/:pass", async (req, res) => {
     try {
         conn = await pool.getConnection();
 
-        await conn.query(`UPDATE admin SET day=day+1 WHERE id=1`);
+        await conn.query(`UPDATE users SET daily=0 WHERE 1`);
 
 
         res.send("DAILY RESET SUCCESS");
-        logger.event("DAILY RESET OCCURED");
+        logger.event("DAILY RESET OCCURRED");
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");

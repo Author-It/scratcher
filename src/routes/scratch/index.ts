@@ -50,11 +50,9 @@ router.put(
             const nw = get[0].nextWinning
             await conn.query(`UPDATE users SET points=points+?,tickets=tickets-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, res.locals.uid, getNextAmt()]);
 
-            const get2 = await conn.query(`SELECT * FROM users WHERE uid=?`, [res.locals.uid]);
-
-            res.send({msg: `CONGRATULATIONS YOU WON ${nw} POINTS!`, data: get2[0]});
+            res.send(`CONGRATULATIONS YOU WON ${nw} POINTS!`);
             addPointsHistory(res.locals.uid, get[0].nextWinning, "scratch", "Scratch");
-            
+
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");
