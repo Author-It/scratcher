@@ -42,7 +42,7 @@ export async function addPointsHistory(
     } catch (error) {
         console.log(error);
     } finally {
-        if (conn) conn.release();
+        if (conn) await conn.release();
     }
 }
 
@@ -50,10 +50,14 @@ function weightedRand2(spec: any) {
     var i, sum = 0, r = Math.random();
     for (i in spec) {
         sum += spec[i];
-        if (r <= sum) return i;
+        if (r <= sum) return parseInt(i);
     }
 }
 
 export function getNextAmt() {
-    return weightedRand2(weightedProbabilities);
+    let a = weightedRand2(weightedProbabilities);
+    
+    if (a===undefined) a=35;
+
+    return a;
 }

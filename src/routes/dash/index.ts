@@ -16,7 +16,7 @@ interface meow {
 router.get("/getinfo/:uid", async (req: Request, res: Response) => {
 
     const uid = req.params.uid;
-
+    console.log("REQUEST AI");
     let conn;
     try {
         conn = await pool.getConnection();

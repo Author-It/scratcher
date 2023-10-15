@@ -45,14 +45,15 @@ router.put(
             const get = await conn.query(`SELECT * FROM users WHERE uid=?`, [res.locals.uid]);
             if (!get[0]) return res.status(403).send("INVALID UID");
 
-            if (get[0].tickets < 0) return res.status(403).send("NOT ENOUGH TICKETS TO OBTAIN A SCRATCH CARD");
+            if (get[0].ticket <= 0) return res.status(403).send("NOT ENOUGH TICKETS TO OBTAIN A SCRATCH CARD");
 
-            const nw = get[0].nextWinning
-            await conn.query(`UPDATE users SET points=points+?,tickets=tickets-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, res.locals.uid, getNextAmt()]);
+            const nw = get[0].nextWinning;
+            const next = getNextAmt();
+
+            await conn.query(`UPDATE users SET points=points+?,ticket=ticket-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, next, res.locals.uid]);
 
             res.send(`CONGRATULATIONS YOU WON ${nw} POINTS!`);
             addPointsHistory(res.locals.uid, get[0].nextWinning, "scratch", "Scratch");
-
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");

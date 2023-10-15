@@ -26,7 +26,7 @@ router.get("/tickets_3", async (req:Request, res:Response) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        await conn.query(`UPDATE users SET tickets=tickets+3 WHERE uid=?`, [userID]).then(v => (res.send("REWARD CLAIMED!")));
+        await conn.query(`UPDATE users SET ticket=ticket+3 WHERE uid=?`, [userID]).then(v => (res.send("REWARD CLAIMED!")));
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");
@@ -98,7 +98,7 @@ router.get("/tickets_5", async (req:Request, res:Response) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        await conn.query(`UPDATE users SET tickets=tickets+5 WHERE uid=?`, [userID]).then(v => (res.send("REWARD CLAIMED!")));
+        await conn.query(`UPDATE users SET ticket=ticket+5 WHERE uid=?`, [userID]).then(v => (res.send("REWARD CLAIMED!")));
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");

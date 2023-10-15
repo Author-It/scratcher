@@ -39,7 +39,7 @@ router.post("/", async (req: Request, res: Response) => {
         const findDeviceID = await conn.query(`SELECT * FROM users WHERE deviceID=?`, [obj.deviceID]);
         const findRef = await conn.query(`SELECT * FROM users WHERE referral=?`, [a]);
 
-        if (findDeviceID[0]) return res.status(409).send("ACCOUNT ALREADY CREATED FROM THIS DEVICE. LOGIN FROM THAT ACCOUND INSTEAD");
+        if (findDeviceID[0]) return res.status(409).send("ACCOUNT ALREADY CREATED FROM THIS DEVICE. LOGIN FROM THAT ACCOUNT INSTEAD");
         if (findRef[0]) a = a.replace(a[0], "0");
         if (findUID[0]) return res.status(409).send("ACCOUNT ALREADY EXISTS WITH THIS EMAIL");
 
@@ -62,6 +62,10 @@ router.post("/", async (req: Request, res: Response) => {
     } finally {
         if (conn) await conn.release();
     }
+});
+
+router.get("/", async (req, res) => {
+    res.send(getNextAmt());
 })
 
 export default router;
