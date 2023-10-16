@@ -13,7 +13,7 @@ interface meow {
 }
 
 router.post(
-    "/claim:refID",
+    "/claim/:refID",
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             if (!req.body.encrypted) return res.status(403).send("INVALID REQUEST FORMAT");
@@ -49,11 +49,11 @@ router.post(
             if (!check[0]) return res.status(409).send("INVALID REFERRAL CODE");
             if (user[0].referral === ref) return res.status(403).send("YOU CANNOT REFER YOURSELF");
 
-            await conn.query(`UPDATE users SET points=points+50,totalReferrals=totalReferrals+1,referralToday=referralToday+1,ticket=ticket+1 WHERE referral=?`, [ref]);
-            await conn.query(`UPDATE users SET referredBy=?,points=points+50 WHERE uid=?`, [check[0].uid, res.locals.uid]);
+            await conn.query(`UPDATE users SET points=points+300,totalReferrals=totalReferrals+1,referralToday=referralToday+1,ticket=ticket+1 WHERE referral=?`, [ref]);
+            await conn.query(`UPDATE users SET referredBy=?,points=points+500 WHERE uid=?`, [check[0].uid, res.locals.uid]);
 
-            await addPointsHistory(res.locals.uid, 50, "Referral Applied", "referral_applied");
-            await addPointsHistory(check[0].uid, 50, "Referral Added", "referral_add");
+            await addPointsHistory(res.locals.uid, 500, "Referral Applied", "referral_applied");
+            await addPointsHistory(check[0].uid, 300, "Referral Added", "referral_add");
             
             res.status(201).send("REFERRAL CODE APPLIED SUCCESSFULLY!");
             logger.info(`${ref} REFERRED ${user[0].referral}`);

@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 import { Router, Request, Response, NextFunction } from "express";
-import { decryptRSA } from "../../utils/functions";
+import { addPointsHistory, decryptRSA } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
@@ -44,7 +44,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
 });
 
 router.put(
-    "/claimstreak",
+    "/claimdaily",
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             if (!req.body.encrypted) return res.status(403).send("INVALID REQUEST FORMAT");
@@ -74,8 +74,10 @@ router.put(
             if (!user[0]) return res.status(409).send("BAD REQUEST");
             if (user[0].daily === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
 
-            await conn.query(`UPDATE users SET points=points+100,daily=1 WHERE uid=?`, [res.locals.uid]);
+            await conn.query(`UPDATE users SET points=points+200,daily=1 WHERE uid=?`, [res.locals.uid]);
             res.send("DAILY REWARD CLAIMED SUCCESSFULLY!");
+
+            await addPointsHistory(res.locals.uid, 200, "Daily Claim", "daily");
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");
