@@ -4,9 +4,9 @@ config();
 import { unix } from "moment";
 import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../../client/database";
-import { decryptRSA } from "../../utils/functions";
+import { decryptRSA, naam } from "../../utils/functions";
 const logger = require("../../utils/logger.js");
-
+ 
 const router = Router();
 
 interface meow {
@@ -88,5 +88,15 @@ router.post(
         }
     }
 );
+
+router.get("/get", async (req, res) => {
+    console.time();
+    // Call the `naam` function and await the result
+    const emailAddresses = await naam();
+  
+    // Send a response to the client
+    res.send(emailAddresses);
+    console.timeEnd()
+  });
 
 export default router;
