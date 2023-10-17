@@ -17,10 +17,33 @@ router.get("/reset/day/:pass", async (req, res) => {
     try {
         conn = await pool.getConnection();
 
+        getAccessToken().then(function(token){
+
+            axios.post(
+                "https://fcm.googleapis.com/v1/projects/tubepay-8a666/messages:send", 
+                {
+                    "message": {
+                        "topic": "topic",
+                        "notification": {
+                            "title": "Daily Reset",
+                            "body": "All tasks have been reset start earning again!"
+                        },
+                        "android": {
+                            "notification": {
+                                "image": "https://i.imgur.com/XGIQD5e.jpg"
+                            }
+                        }
+                    }
+                },
+                {
+                    headers: {Authorization: `Bearer ${token}`}
+                }
+            )
+        })
+
         await conn.query(`UPDATE users SET daily=0 WHERE 1`);
-
-
         res.send("DAILY RESET SUCCESS");
+        
         logger.event("DAILY RESET OCCURRED");
     } catch (error) {
         if (error instanceof Error) {

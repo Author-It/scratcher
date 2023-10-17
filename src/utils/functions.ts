@@ -4,6 +4,11 @@ import { pool } from "../client/database";
 import fs from "fs";
 import { parse } from "csv-parse"
 
+const { google } = require("googleapis");
+
+const MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
+const SCOPES = [MESSAGING_SCOPE];
+
 export async function decryptRSA(encryptedBase64: string) {
 
     try {
@@ -88,11 +93,31 @@ export async function naam(): Promise<string[]> {
 
     const send: string[] = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 25; i++) {
         const a = Math.floor(Math.random() * (5000 - 5 + 1) + 5);
 
         send.push("*****" + rows[a].slice(4));
     }
 
     return send;
+}
+
+export function getAccessToken() {
+    return new Promise(function (resolve, reject) {
+        const key = require("../../assets/service.json");
+        const jwtClient = new google.auth.JWT(
+            key.client_email,
+            null,
+            key.private_key,
+            SCOPES,
+            null
+        );
+        jwtClient.authorize(function (err: any, tokens: any) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(tokens.access_token);
+        });
+    });
 }

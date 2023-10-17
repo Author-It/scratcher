@@ -89,14 +89,4 @@ router.post(
     }
 );
 
-router.get("/get", async (req, res) => {
-    console.time();
-    // Call the `naam` function and await the result
-    const emailAddresses = await naam();
-  
-    // Send a response to the client
-    res.send(emailAddresses);
-    console.timeEnd()
-  });
-
 export default router;

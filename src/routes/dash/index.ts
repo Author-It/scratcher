@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 import { Router, Request, Response, NextFunction } from "express";
-import { addPointsHistory, decryptRSA } from "../../utils/functions";
+import { addPointsHistory, decryptRSA, naam } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
@@ -14,16 +14,18 @@ interface meow {
 }
 
 router.get("/getinfo/:uid", async (req: Request, res: Response) => {
-
+    console.time()
     const uid = req.params.uid;
-    console.log("REQUEST AI");
     let conn;
     try {
         conn = await pool.getConnection();
         const get = await conn.query(`SELECT * FROM users WHERE uid=?;`, [uid]);
 
         if (!get[0]) return res.status(400).send("INVALID UID")
-        // Object.assign(get[0]);
+
+        const emailAddresses = await naam();
+        
+        Object.assign(get[0], {email: emailAddresses});
 
         res.json(get[0]);
     } catch (error) {
@@ -40,6 +42,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
         if (conn) await conn.release();
+        console.timeEnd();
     }
 });
 
