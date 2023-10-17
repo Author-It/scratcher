@@ -14,9 +14,17 @@ interface meow {
     fingerprint: string;
     email: string;
     method: string;
-    amount: number;
+    amount: string;
     time: number; // epoch time
     country: string;
+    points: number;
+}
+
+const mainObj : { [key: string]: number }= {
+    "90000" : 1,
+    "2000" : 0.02,
+    "20000" : 0.2,
+    "490000" : 5
 }
 
 router.post(
@@ -39,7 +47,8 @@ router.post(
             res.locals.email = obj.email;
             res.locals.country = obj.country;
             res.locals.time = obj.time;
-
+            res.locals.points = obj.points;
+            
             next();
         } catch (err) {
             console.log(err)
@@ -54,11 +63,11 @@ router.post(
 
             const check = await conn.query("SELECT points,payoutLock FROM users WHERE uid=?", [res.locals.uid]);
             // if (res.locals.method === "PayPal" && res.locals.amount==="0.04" && check[0].payoutLock === 1) return res.status(403).send("PLEASE WAIT A FEW DAYS BEFORE SENDING THIS AMOUNT AGAIN")
-            if (check[0].points < res.locals.amount * 50000) return res.status(403).send("POINTS LESS THAN REQUIRED");
+            if (check[0].points < res.locals.points) return res.status(403).send("POINTS LESS THAN REQUIRED");
 
-            await conn.query(`INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
-            await conn.query(`UPDATE users SET points=points-?,payoutLock=1 WHERE uid=?`, [res.locals.amount * 50000, res.locals.uid]);
-            await conn.query(`UPDATE admin SET totalPayout=totalPayout+? WHERE 1`, [res.locals.amount]);
+            await conn.query(`INSERT INTO payout (method, amount, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
+            await conn.query(`UPDATE users SET points=points-?,payoutLock=1 WHERE uid=?`, [res.locals.points, res.locals.uid]);
+            await conn.query(`UPDATE admin SET totalPayout=totalPayout+? WHERE 1`, [mainObj[String(res.locals.points)]]);
             
             logger.success(`Payout requested by ${res.locals.uid}`);
             res.status(201).send("PAYOUT SUCCESSFULLY REQUESTED.");

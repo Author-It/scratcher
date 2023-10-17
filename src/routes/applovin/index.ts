@@ -12,15 +12,15 @@ const router = Router();
 router.get("/tickets_3", async (req:Request, res:Response) => {
     const userID = req.query.user_id;
     const event = req.query.event;
-    const eventToekn = req.query.token;
-    if (!userID || !event || !eventToekn) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
+    const eventToken = req.query.token;
+    if (!userID || !event || !eventToken) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString();
 
-    if (toCheck != eventToekn) { 
+    if (toCheck != eventToken) { 
         res.status(400).send("Bad Request"); 
         logger.warn("Bad SHA"); 
-        return; 
+        return;
     };
 
     let conn;
@@ -48,12 +48,12 @@ router.get("/points", async(req:Request, res:Response) => {
 
     const userID = req.query.user_id;
     const event = req.query.event;
-    const eventToekn = req.query.token;
-    if (!userID || !event || !eventToekn) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
+    const eventToken = req.query.token;
+    if (!userID || !event || !eventToken) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
 
-    if (toCheck != eventToekn) { 
+    if (toCheck != eventToken) { 
         res.status(400).send("Bad Request"); 
         logger.warn("Bad SHA"); 
         return; 
@@ -84,12 +84,12 @@ router.get("/points", async(req:Request, res:Response) => {
 router.get("/tickets_5", async (req:Request, res:Response) => {
     const userID = req.query.user_id;
     const event = req.query.event;
-    const eventToekn = req.query.token;
-    if (!userID || !event || !eventToekn) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
+    const eventToken = req.query.token;
+    if (!userID || !event || !eventToken) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
 
-    if (toCheck != eventToekn) { 
+    if (toCheck != eventToken) { 
         res.status(400).send("Bad Request"); 
         logger.warn("Bad SHA"); 
         return; 

@@ -49,7 +49,7 @@ router.post(
             if (!check[0]) return res.status(409).send("INVALID REFERRAL CODE");
             if (user[0].referral === ref) return res.status(403).send("YOU CANNOT REFER YOURSELF");
 
-            await conn.query(`UPDATE users SET points=points+300,totalReferrals=totalReferrals+1,referralToday=referralToday+1,ticket=ticket+1 WHERE referral=?`, [ref]);
+            await conn.query(`UPDATE users SET points=points+300,totalReferrals=totalReferrals+1,ticket=ticket+1 WHERE referral=?`, [ref]);
             await conn.query(`UPDATE users SET referredBy=?,points=points+500 WHERE uid=?`, [check[0].uid, res.locals.uid]);
 
             await addPointsHistory(res.locals.uid, 500, "Referral Applied", "referral_applied");
