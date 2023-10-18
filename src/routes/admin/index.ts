@@ -5,6 +5,9 @@ import { Router, Request, Response } from "express";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 
+import axios from "axios";
+import { getAccessToken } from "../../utils/functions";
+
 const router = Router();
 
 router.get("/reset/day/:pass", async (req, res) => {
@@ -30,7 +33,7 @@ router.get("/reset/day/:pass", async (req, res) => {
                         },
                         "android": {
                             "notification": {
-                                "image": "https://i.imgur.com/XGIQD5e.jpg"
+                                "image": "https://i.imgur.com/I1O0GXc.jpg"
                             }
                         }
                     }
