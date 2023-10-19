@@ -39,6 +39,11 @@ router.put(
         let conn;
         try {
             conn = await pool.getConnection();
+            const r = await conn.query(`SELECT ads FROM users WHERE uid=?`, [res.locals.uid]);
+
+            const aa = parseInt((Date.now()/1000).toString());
+            if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads-aa} SECONDS MORE!`)
+
             await conn.query(`UPDATE users SET ticket=ticket+3,ads=?,totalAds=totalAds+1 WHERE uid=?`, [(Date.now()/1000) + 180, res.locals.uid]);
             res.send("REWARD CLAIMED!");
         } catch (error) {
@@ -77,6 +82,11 @@ router.get("/points", async(req:Request, res:Response) => {
     let conn;
     try {
         conn = await pool.getConnection();
+        const r = await conn.query(`SELECT ads FROM users WHERE uid=?`, [res.locals.uid]);
+
+        const aa = parseInt((Date.now()/1000).toString());
+        if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads-aa} SECONDS MORE!`);
+
         await conn.query(`UPDATE users SET points=points+5 WHERE uid=?`, [userID]).then(v => (res.send("REWARD CLAIMED!")));
         await addPointsHistory(userID!.toString(), 5, "Watch Ads", "rewarded_points");
     } catch (error) {

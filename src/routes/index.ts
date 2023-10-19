@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
+import adminRoute from "./admin/index"
 import applovinRoute from "./applovin/index";
 import dashRoute from "./dash/index";
 import loginRoute from "./login/index";
@@ -9,6 +10,7 @@ import payoutRoute from "./payout/index";
 import referralRoute from "./referral/index";
 import scratchRoute from "./scratch/index";
 
+router.use("/admin", adminRoute);
 router.use("/applovin", applovinRoute);
 router.use("/dash", dashRoute);
 router.use("/login", loginRoute);
@@ -18,7 +20,7 @@ router.use("/referral", referralRoute);
 router.use("/scratch", scratchRoute);
 
 router.get("/", async (req, res) => {
-    res.send("WELCOME TO OUR API!! 🌏🌏🌏");
+    res.send("WELCOME TO OUR API!! 🌏🌏🌏 - sc");
 });
 
 export default router;

@@ -13,13 +13,22 @@ interface meow {
     time: number;
 }
 
+/*
+deviceID
+offerwall
+scratch
+lucky
+totalAds
+totalAds2
+*/
+
 router.get("/getinfo/:uid", async (req: Request, res: Response) => {
     console.time()
     const uid = req.params.uid;
     let conn;
     try {
         conn = await pool.getConnection();
-        const get = await conn.query(`SELECT * FROM users WHERE uid=?;`, [uid]);
+        const get = await conn.query(`SELECT points,ticket,referral,referredBy,totalReferrals,ban,nextWinning,daily,payoutLock,ads,ads2 FROM users WHERE uid=?;`, [uid]);
 
         if (!get[0]) return res.status(400).send("INVALID UID")
 
