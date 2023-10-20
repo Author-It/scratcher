@@ -25,34 +25,6 @@ export async function decryptRSA(encryptedBase64: string) {
     }
 }
 
-export async function addPointsHistory(
-    uid: string,
-    amount: number,
-    source: string,
-    id: string
-) {
-    if (!uid || !amount || !source || !id) return;
-
-    let conn;
-    try {
-        conn = await pool.getConnection();
-        const user = await conn.query(`SELECT pointsHistory from users WHERE uid=?`, [uid]);
-        const pointHistory = JSON.parse(user[0].pointsHistory).history;
-
-        const data = {};
-        Object.assign(data, { amount: amount }, { source: source }, { id: id });
-        pointHistory.push(data);
-        await conn.query(`UPDATE users SET pointsHistory=? WHERE uid=?`, [
-            JSON.stringify({ history: pointHistory }),
-            uid,
-        ]);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        if (conn) await conn.release();
-    }
-}
-
 function weightedRand2(spec: any) {
     var i, sum = 0, r = Math.random();
     for (i in spec) {

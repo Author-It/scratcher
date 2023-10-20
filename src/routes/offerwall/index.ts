@@ -3,7 +3,6 @@ config();
 
 import { Router } from "express";
 import { pool } from "../../client/database";
-import { addPointsHistory } from "../../utils/functions";
 const logger = require("../../utils/logger.js");
 
 const router = Router();
@@ -23,8 +22,6 @@ router.get("/", async (req, res) => {
 
         conn = await pool.getConnection();
         await conn.query(`UPDATE users SET points=points+?,offerwall=offerwall+? WHERE uid=?`, [parseInt(amount), parseInt(amount), uid]);
-        await addPointsHistory(uid, parseInt(amount), "OfferWall Task", "offer_wall");
-
         res.send("SUCCESS");
     } catch (error) {
         console.log(error)

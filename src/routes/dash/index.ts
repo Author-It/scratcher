@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 import { Router, Request, Response, NextFunction } from "express";
-import { addPointsHistory, decryptRSA } from "../../utils/functions";
+import { decryptRSA } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
@@ -90,7 +90,6 @@ router.put(
             await conn.query(`UPDATE users SET points=points+200,daily=1 WHERE uid=?`, [res.locals.uid]);
             res.send("DAILY REWARD CLAIMED SUCCESSFULLY!");
 
-            await addPointsHistory(res.locals.uid, 200, "Daily Claim", "daily");
         } catch (error) {
             if (error instanceof Error) {
                 logger.error("====================================");

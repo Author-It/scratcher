@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 
-import { addPointsHistory, decryptRSA } from "../../utils/functions";
+import { decryptRSA } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 
@@ -51,9 +51,6 @@ router.post(
 
             await conn.query(`UPDATE users SET points=points+300,totalReferrals=totalReferrals+1,ticket=ticket+1 WHERE referral=?`, [ref]);
             await conn.query(`UPDATE users SET referredBy=?,points=points+500 WHERE uid=?`, [check[0].uid, res.locals.uid]);
-
-            await addPointsHistory(res.locals.uid, 500, "Referral Applied", "referral_applied");
-            await addPointsHistory(check[0].uid, 300, "Referral Added", "referral_add");
             
             res.status(201).send("REFERRAL CODE APPLIED SUCCESSFULLY!");
             logger.info(`${ref} REFERRED ${user[0].referral}`);
