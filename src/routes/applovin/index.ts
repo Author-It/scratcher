@@ -107,9 +107,12 @@ router.get("/points", async(req:Request, res:Response) => {
 });
 
 router.get("/tickets_5", async (req:Request, res:Response) => {
+
     const userID = req.query.user_id;
     const event = req.query.event;
     const eventToken = req.query.token;
+
+    console.log("AAAAA")
     if (!userID || !event || !eventToken) { res.status(422).send("Incomplete data sent"); logger.warn("Incomplete data"); return; }
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
@@ -122,9 +125,11 @@ router.get("/tickets_5", async (req:Request, res:Response) => {
 
     let conn;
     try {
+
         conn = await pool.getConnection();
         await conn.query(`UPDATE users SET ticket=ticket+5,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now()/1000) + 3600, userID]); 
         res.send("REWARD CLAIMED!")
+
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");

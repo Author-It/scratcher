@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 import { Router, Request, Response, NextFunction } from "express";
-import { addPointsHistory, decryptRSA, naam } from "../../utils/functions";
+import { addPointsHistory, decryptRSA } from "../../utils/functions";
 import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 const router = Router();
@@ -23,8 +23,9 @@ totalAds2
 */
 
 router.get("/getinfo/:uid", async (req: Request, res: Response) => {
-    console.time()
-    const uid = req.params.uid;
+
+    const { uid } = req.params;
+
     let conn;
     try {
         conn = await pool.getConnection();
@@ -32,7 +33,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
 
         if (!get[0]) return res.status(400).send("INVALID UID")
 
-        const emailAddresses = await naam();
+        const emailAddresses = req.app.get("emails");
         
         Object.assign(get[0], {email: emailAddresses});
 
@@ -51,7 +52,6 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
         if (conn) await conn.release();
-        console.timeEnd();
     }
 });
 
@@ -60,6 +60,7 @@ router.put(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             if (!req.body.encrypted) return res.status(403).send("INVALID REQUEST FORMAT");
+            
             const encrypted = req.body.encrypted;
             const decrypted = await decryptRSA(encrypted);
             const obj: meow = JSON.parse(decrypted);

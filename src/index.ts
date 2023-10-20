@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 async function main() {
     try {
-        const app = createApp();
+        const app = await createApp();
         app.listen(PORT, () => logger.event(`Running on Port ${PORT}`));
     } catch (err) {
         console.log(err);

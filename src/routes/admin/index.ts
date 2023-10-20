@@ -6,13 +6,13 @@ import { pool } from "../../client/database";
 const logger = require("../../utils/logger");
 
 import axios from "axios";
-import { getAccessToken } from "../../utils/functions";
+import { getAccessToken, naam } from "../../utils/functions";
 
 const router = Router();
 
 router.get("/reset/day/:pass", async (req, res) => {
 
-    const pass = req.params.pass;
+    const { pass } = req.params;
 
     if (pass != process.env.PASSWORD) return res.status(403).send("ERROR");
 
@@ -41,8 +41,8 @@ router.get("/reset/day/:pass", async (req, res) => {
                 {
                     headers: {Authorization: `Bearer ${token}`}
                 }
-            )
-        })
+            );
+        });
 
         await conn.query(`UPDATE users SET daily=0 WHERE 1`);
         res.send("DAILY RESET SUCCESS");
@@ -106,6 +106,20 @@ router.get("/testNotif", async (req, res) => {
             logger.error("====================================");
         }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
+    }
+});
+
+router.get("/changeMail/:pass", async (req, res) => {
+    const { pass } = req.params;
+
+    if (pass != process.env.ADMIN_PASS)
+
+    try {
+        req.app.set("emails", await naam());
+        res.send(req.app.get("emails"));
+    } catch (e) {
+        console.log(e)
+        res.status(500).send("INTERNAL SERVER ERROR");
     }
 });
 
