@@ -9,12 +9,32 @@ const { google } = require("googleapis");
 const MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
 const SCOPES = [MESSAGING_SCOPE];
 
+export async function storeHash(hash: string) {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const check = await conn.query("SELECT * FROM requests WHERE reqs=?", [hash]);
+        if (check[0]) return -1;
+
+        await conn.query("INSERT INTO requests (reqs) VALUES (?)", [hash]);
+        return 0;
+    } catch (err) {
+        console.log(err);
+        return -1;
+    } finally {
+        if (conn) conn.release();
+    }
+}
+
 export async function decryptRSA(encryptedBase64: string) {
 
     try {
         const privateKeyPEM = forge.pki.privateKeyFromPem(PRIVATE_KEY);
         const encryptedBytes = forge.util.decode64(encryptedBase64);
 
+        const store = await storeHash(encryptedBase64);
+        if (store === -1) return `{fingerprint: "meow"}`;
+        
         const decrypt = privateKeyPEM.decrypt(encryptedBytes, "RSAES-PKCS1-V1_5");
         const decrypredString = decrypt.toString();
 

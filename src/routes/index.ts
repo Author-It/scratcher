@@ -4,6 +4,7 @@ const router = Router();
 import adminRoute from "./admin/index"
 import applovinRoute from "./applovin/index";
 import dashRoute from "./dash/index";
+import giftRoute from "./gift/index";
 import historyRoute from "./history/index";
 import loginRoute from "./login/index";
 import offerwallRoute from "./offerwall/index";
@@ -14,6 +15,7 @@ import scratchRoute from "./scratch/index";
 router.use("/admin", adminRoute);
 router.use("/applovin", applovinRoute);
 router.use("/dash", dashRoute);
+router.use("/gift", giftRoute);
 router.use("/history", historyRoute);
 router.use("/login", loginRoute);
 router.use("/offerwall", offerwallRoute);
