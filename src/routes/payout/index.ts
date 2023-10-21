@@ -22,7 +22,7 @@ interface meow {
 
 const mainObj : { [key: string]: number }= {
     "90000" : 1,
-    "2000" : 0.02,
+    "7000" : 0.02,
     "20000" : 0.2,
     "490000" : 5
 }
