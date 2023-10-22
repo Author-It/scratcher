@@ -28,7 +28,7 @@ router.post("/", async (req: Request, res: Response) => {
 
         conn = await pool.getConnection();
         if (obj.fingerprint != process.env.FINGERPRINT) {
-            
+
             await conn.query(`UPDATE admin SET fingerprintCount=fingerprintCount+1 WHERE id=1`);
             res.send("INVALID APP FINGERPRINT");
             return;
@@ -43,7 +43,7 @@ router.post("/", async (req: Request, res: Response) => {
         if (findRef[0]) a = a.replace(a[0], "0");
         if (findUID[0]) return res.status(409).send("ACCOUNT ALREADY EXISTS WITH THIS EMAIL");
 
-        await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, getNextAmt()]);
+        await conn.query(`INSERT INTO users (uid, referral, deviceID, nextWinning) VALUES (?, ?, ?, ?)`, [obj.uid, a, obj.deviceID, getNextAmt(0)]);
         res.status(201).send("Data Creation Success!");
         logger.success("New Account Created: " + obj.uid);
 
@@ -65,7 +65,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.get("/", async (req, res) => {
-    res.send(getNextAmt());
+    res.send(getNextAmt(0));
 })
 
 export default router;

@@ -39,12 +39,12 @@ router.put(
         let conn;
         try {
             conn = await pool.getConnection();
-            const r = await conn.query(`SELECT ads FROM users WHERE uid=?`, [res.locals.uid]);
+            const r = await conn.query(`SELECT ads,ads20,waitingTime FROM users WHERE uid=?`, [res.locals.uid]);
 
             const aa = parseInt((Date.now()/1000).toString());
             if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads-aa} SECONDS MORE!`)
 
-            await conn.query(`UPDATE users SET ticket=ticket+3,ads=?,totalAds=totalAds+1 WHERE uid=?`, [(Date.now()/1000) + 180, res.locals.uid]);
+            await conn.query(`UPDATE users SET ticket=ticket+3,ads=?,totalAds=totalAds+1,ads20=ads20+1,waitingTime+? WHERE uid=?`, [(Date.now()/1000) + r[0].waitingTime, (r[0].ads20 > 20 ? 1 : 0), res.locals.uid]);
             res.send("REWARD CLAIMED!");
         } catch (error) {
             if (error instanceof Error) {

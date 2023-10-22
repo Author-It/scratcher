@@ -48,7 +48,7 @@ router.put(
             if (get[0].ticket <= 0) return res.status(403).send("NOT ENOUGH TICKETS TO OBTAIN A SCRATCH CARD");
 
             const nw = get[0].nextWinning;
-            const next = getNextAmt();
+            const next = getNextAmt(get[0].points);
 
             await conn.query(`UPDATE users SET points=points+?,ticket=ticket-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, next, res.locals.uid]);
 

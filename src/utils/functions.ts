@@ -1,5 +1,5 @@
 import forge from "node-forge";
-import { PRIVATE_KEY, weightedProbabilities } from "./constants";
+import { PRIVATE_KEY, weightedProbabilities, weightedProbabilities100 } from "./constants";
 import { pool } from "../client/database";
 import fs from "fs";
 import { parse } from "csv-parse"
@@ -34,7 +34,7 @@ export async function decryptRSA(encryptedBase64: string) {
 
         const store = await storeHash(encryptedBase64);
         if (store === -1) return `{fingerprint: "meow"}`;
-        
+
         const decrypt = privateKeyPEM.decrypt(encryptedBytes, "RSAES-PKCS1-V1_5");
         const decrypredString = decrypt.toString();
 
@@ -53,10 +53,17 @@ function weightedRand2(spec: any) {
     }
 }
 
-export function getNextAmt() {
-    let a = weightedRand2(weightedProbabilities);
+export function getNextAmt(points: number) {
 
-    if (a === undefined) a = 35;
+    let a;
+
+    if (points > 4000) {
+        a = weightedRand2(weightedProbabilities);
+        if (a === undefined) a = 25;
+    } else {
+        a = weightedRand2(weightedProbabilities100);
+        if (a === undefined) a = 55;
+    }
 
     return a;
 }
@@ -81,7 +88,7 @@ function getRandMail() {
 
 export async function naam(): Promise<string[]> {
 
-    const rows:any = await getRandMail();
+    const rows: any = await getRandMail();
 
     const send: string[] = [];
 

@@ -44,7 +44,7 @@ router.get("/reset/day/:pass", async (req, res) => {
             );
         });
 
-        await conn.query(`UPDATE users SET daily=0 WHERE 1`);
+        await conn.query(`UPDATE users SET daily=0,ads20=0 WHERE 1`);
         res.send("DAILY RESET SUCCESS");
         
         logger.event("DAILY RESET OCCURRED");
