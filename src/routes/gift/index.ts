@@ -40,7 +40,7 @@ router.put("/claim",
             conn = await pool.getConnection();
 
             const user = await conn.query(`SELECT gift FROM users WHERE uid=?`, [uid]);
-            const admin = await conn.query(`SELECT reward FROM admin WHERE id=1`);
+            const admin = await conn.query(`SELECT rewards FROM admin WHERE id=1`);
 
             if (!user[0]) return res.status(400).send("INVALID UID");
             if (user[0].gift) return res.status(400).send("ALREADY CLAIMED");
