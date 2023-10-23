@@ -41,6 +41,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
 
         console.log(req.socket.bytesRead);
         console.log(req.socket.bytesWritten);
+        
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");
