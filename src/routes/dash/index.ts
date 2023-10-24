@@ -38,10 +38,6 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         Object.assign(get[0], {email: emailAddresses});
 
         res.json(get[0]);
-
-        console.log(req.socket.bytesRead);
-        console.log(req.socket.bytesWritten);
-        
     } catch (error) {
         if (error instanceof Error) {
             logger.error("====================================");
