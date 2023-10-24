@@ -35,16 +35,16 @@ router.put(
             res.status(500).send("INTERNAL SERVER ERROR");
         }
     },
-    async (req:Request, res:Response) => {
+    async (req: Request, res: Response) => {
         let conn;
         try {
             conn = await pool.getConnection();
             const r = await conn.query(`SELECT ads,ads20,waitingTime FROM users WHERE uid=?`, [res.locals.uid]);
 
-            const aa = parseInt((Date.now()/1000).toString());
-            if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads-aa} SECONDS MORE!`)
+            const aa = parseInt((Date.now() / 1000).toString());
+            if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`)
 
-            await conn.query(`UPDATE users SET ticket=ticket+3,ads=?,totalAds=totalAds+1,ads20=ads20+1,waitingTime+? WHERE uid=?`, [parseInt((Date.now()/1000).toString()) + r[0].waitingTime, (r[0].ads20 > 20 ? 1 : 0), res.locals.uid]);
+            await conn.query(`UPDATE users SET ticket=ticket+3,ads=?,totalAds=totalAds+1,ads20=ads20+1,waitingTime = waitingTime + ? WHERE uid=?`, [parseInt((Date.now() / 1000).toString()) + r[0].waitingTime, (r[0].ads20 > 20 ? 1 : 0), res.locals.uid]);
             res.send("REWARD CLAIMED!");
         } catch (error) {
             if (error instanceof Error) {
@@ -64,7 +64,7 @@ router.put(
     }
 );
 
-router.get("/tickets_5", async (req:Request, res:Response) => {
+router.get("/tickets_5", async (req: Request, res: Response) => {
 
     const userID = req.query.user_id;
     const event = req.query.event;
@@ -74,10 +74,10 @@ router.get("/tickets_5", async (req:Request, res:Response) => {
 
     const toCheck = sha1.create().update(event! + process.env.APPLOVIN_TOKEN!).digest().toHex().toString()
 
-    if (toCheck != eventToken) { 
-        res.status(400).send("Bad Request"); 
-        logger.warn("Bad SHA"); 
-        return; 
+    if (toCheck != eventToken) {
+        res.status(400).send("Bad Request");
+        logger.warn("Bad SHA");
+        return;
     };
 
     let conn;
@@ -86,10 +86,10 @@ router.get("/tickets_5", async (req:Request, res:Response) => {
         conn = await pool.getConnection();
         const r = await conn.query(`SELECT ads FROM users WHERE uid=?`, [userID]);
 
-        const aa = parseInt((Date.now()/1000).toString());
-        if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads-aa} SECONDS MORE!`);
+        const aa = parseInt((Date.now() / 1000).toString());
+        if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`);
 
-        await conn.query(`UPDATE users SET ticket=ticket+5,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now()/1000) + 3600, userID]); 
+        await conn.query(`UPDATE users SET ticket=ticket+5,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now() / 1000) + 3600, userID]);
         res.send("REWARD CLAIMED!");
     } catch (error) {
         if (error instanceof Error) {
