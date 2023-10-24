@@ -42,6 +42,7 @@ router.post(
             if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT");
             if (obj.time + 5 > Date.now()) return res.status(409).send("REQUEST TIMED OUT");
 
+            if (obj.country === "BR" && obj.amount === "0.07" && obj.method === "PayPal") return res.status(403).send("$0.07 IS NOT AVAILABLE IN PAYPAL. PLEASE CHOOSE A HIGHER AMOUNT.");
             res.locals.uid = obj.uid;
             res.locals.method = obj.method;
             res.locals.amount = obj.amount;
@@ -63,7 +64,6 @@ router.post(
             conn = await pool.getConnection();
 
             const check = await conn.query("SELECT points,payoutLock FROM users WHERE uid=?", [res.locals.uid]);
-            // if (res.locals.method === "PayPal" && res.locals.amount==="0.04" && check[0].payoutLock === 1) return res.status(403).send("PLEASE WAIT A FEW DAYS BEFORE SENDING THIS AMOUNT AGAIN")
             if (check[0].points < res.locals.points) return res.status(403).send("POINTS LESS THAN REQUIRED");
 
             await conn.query(`INSERT INTO payout (method, amount, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
