@@ -138,7 +138,7 @@ router.put(
             const aa = parseInt((Date.now() / 1000).toString());
             if (aa < r[0].ads10) return res.status(403).send(`YOU MUST WAIT ${r[0].ads10 - aa} SECONDS MORE!`)
 
-            await conn.query(`UPDATE users SET ads10=?,totalAds10=totalAds10+1 WHERE uid=?`, [parseInt((Date.now() / 1000).toString()) + 600, res.locals.uid]);
+            await conn.query(`UPDATE users SET ads10=?,totalAds10=totalAds10+1, points = points + 50 WHERE uid=?`, [parseInt((Date.now() / 1000).toString()) + 600, res.locals.uid]);
             res.send("REWARD CLAIMED!");
         } catch (error) {
             if (error instanceof Error) {
