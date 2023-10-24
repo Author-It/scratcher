@@ -108,4 +108,8 @@ router.put(
     }
 );
 
+router.get("/delete", async (req, res) => {
+    res.send("<p style=\"font-size: 1rem;\">To get your account deleted mail us at <b style=\"color: blue\">teamapp.company@gmail.com</b></p><br><br>Or <a href=\"mailto:teamapp.company@gmail.com?subject=Account deletion request\">Click Here</a>");
+})
+
 export default router;
