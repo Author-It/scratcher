@@ -89,7 +89,7 @@ router.get("/tickets_5", async (req: Request, res: Response) => {
         const aa = parseInt((Date.now() / 1000).toString());
         if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`);
 
-        await conn.query(`UPDATE users SET ticket=ticket+5,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now() / 1000) + 3600, userID]);
+        await conn.query(`UPDATE users SET ticket=ticket+10,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now() / 1000) + 3600, userID]);
         res.send("REWARD CLAIMED!");
     } catch (error) {
         if (error instanceof Error) {
