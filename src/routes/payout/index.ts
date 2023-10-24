@@ -42,7 +42,8 @@ router.post(
             if (obj.fingerprint != process.env.FINGERPRINT) return res.send("INVALID APP FINGERPRINT");
             if (obj.time + 5 > Date.now()) return res.status(409).send("REQUEST TIMED OUT");
 
-            if (obj.country === "BR" && obj.points === 7000 && obj.method === "PayPal") return res.status(403).send("$0.07 IS NOT AVAILABLE IN PAYPAL. PLEASE CHOOSE A HIGHER AMOUNT.");
+            if (obj.country === "BR" && obj.points === 7000 && obj.method === "Paypal") return res.status(403).send("$0.07 IS NOT AVAILABLE IN PAYPAL. PLEASE CHOOSE A HIGHER AMOUNT.");
+            
             res.locals.uid = obj.uid;
             res.locals.method = obj.method;
             res.locals.amount = obj.amount;
