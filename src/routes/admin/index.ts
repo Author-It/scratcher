@@ -10,9 +10,9 @@ import { getAccessToken, naam } from "../../utils/functions";
 
 const router = Router();
 
-router.get("/reset/day/:pass", async (req, res) => {
+router.get("/reset/day/", async (req, res) => {
 
-    const { pass } = req.params;
+    const { pass } = req.query;
 
     if (pass != process.env.PASSWORD) return res.status(403).send("ERROR");
 
@@ -62,50 +62,6 @@ router.get("/reset/day/:pass", async (req, res) => {
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
         if (conn) await conn.release();
-    }
-});
-
-router.get("/testNotif", async (req, res) => {
-
-    try {
-        getAccessToken().then(function(token){
-
-            axios.post(
-                "https://fcm.googleapis.com/v1/projects/scratchcash-da8ee/messages:send", 
-                {
-                    "message": {
-                        "topic": "topic",
-                        "notification": {
-                            "title": "Daily Reset",
-                            "body": "All tasks have been reset start earning again!"
-                        },
-                        "android": {
-                            "notification": {
-                                "image": "https://i.imgur.com/I1O0GXc.jpg"
-                            }
-                        }
-                    }
-                },
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                }
-            )
-        })
-
-        res.send("NOTIF SENT");
-        
-    } catch (error) {
-        if (error instanceof Error) {
-            logger.error("====================================");
-            logger.error(error.name);
-            logger.error(error.message);
-            logger.error("====================================");
-        } else {
-            logger.error("====================================");
-            logger.error("UNEXPECTED ERROR");
-            logger.error("====================================");
-        }
-        res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     }
 });
 
