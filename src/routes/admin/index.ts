@@ -123,4 +123,20 @@ router.get("/changeMail/:pass", async (req, res) => {
     }
 });
 
+router.get("/notice", async (req: Request, res: Response) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        
+        const result = await conn.query("SELECT notice FROM admin WHERE id=1");
+
+        res.send(result[0].notice);
+    } catch (e) {
+        console.log(e)
+        res.status(500).send("INTERNAL SERVER ERROR");
+    } finally {
+        if (conn) await conn.release();
+    }
+});
+
 export default router;
