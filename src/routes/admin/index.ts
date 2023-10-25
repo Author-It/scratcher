@@ -99,8 +99,8 @@ router.get("/changeMail", async (req, res) => {
     if (pass != process.env.ADMIN_PASS)
 
     try {
-        req.app.set("emails", await naam());
-        res.send(req.app.get("emails"));
+        await req.app.set("emails", await naam());
+        res.send("SUCCESS");
     } catch (e) {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
@@ -115,6 +115,22 @@ router.get("/notice", async (req: Request, res: Response) => {
         const result = await conn.query("SELECT notice FROM admin WHERE id=1");
 
         res.send(result[0].notice);
+    } catch (e) {
+        console.log(e)
+        res.status(500).send("INTERNAL SERVER ERROR");
+    } finally {
+        if (conn) await conn.release();
+    }
+});
+
+router.get("/notice_link", async (req: Request, res: Response) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        
+        const result = await conn.query("SELECT notice_link FROM admin WHERE id=1");
+
+        res.send(result[0].notice_link);
     } catch (e) {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
