@@ -28,6 +28,11 @@ const mainObj : { [key: string]: number }= {
     "50000" : 0.5,
 }
 
+const inrObj : { [key: string]: number }= {
+    "90000" : 50,
+    "490000" : 500
+}
+
 router.post(
     "/",
     async (req: Request, res: Response, next: NextFunction) => {
@@ -67,10 +72,15 @@ router.post(
             const check = await conn.query("SELECT points,payoutLock FROM users WHERE uid=?", [res.locals.uid]);
             if (check[0].points < res.locals.points) return res.status(403).send("POINTS LESS THAN REQUIRED");
 
-            await conn.query(`INSERT INTO payout (method, amount, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
             await conn.query(`UPDATE users SET points=points-?,payoutLock=1 WHERE uid=?`, [res.locals.points, res.locals.uid]);
-            await conn.query(`UPDATE admin SET totalPayout=totalPayout+? WHERE 1`, [mainObj[String(res.locals.points)]]);
             
+            if (res.locals.method === "Paytm") {
+                await conn.query(`INSERT INTO payoutPaytm (amount, phone, country, uid, date) VALUES (?,?,?,?,?);`, [inrObj[String(res.locals.points)], res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
+            } else {
+                await conn.query(`INSERT INTO payout (method, amount, email, country, uid, date) VALUES (?,?,?,?,?,?);`, [res.locals.method, res.locals.amount, res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
+                await conn.query(`UPDATE admin SET totalPayout=totalPayout+? WHERE 1`, [mainObj[String(res.locals.points)]]);
+            }
+
             logger.success(`Payout requested by ${res.locals.uid}`);
             res.status(201).send("PAYOUT SUCCESSFULLY REQUESTED.");
         } catch (error) {
