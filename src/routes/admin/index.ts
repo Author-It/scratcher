@@ -65,8 +65,36 @@ router.get("/reset/day/", async (req, res) => {
     }
 });
 
-router.get("/changeMail/:pass", async (req, res) => {
-    const { pass } = req.params;
+router.get("/reset/request", async (req, res) => {
+    const { pass } = req.query;
+
+    if (pass != process.env.ADMIN_PASS) return res.status(403).send("ERROR");
+
+    let conn;
+    try {   
+        conn = await pool.getConnection();
+
+        await conn.query("TRUNCATE TABLE request");
+        res.send("SUCCESS");
+    } catch (error) {
+        if (error instanceof Error) {
+            logger.error("====================================");
+            logger.error(error.name);
+            logger.error(error.message);
+            logger.error("====================================");
+        } else {
+            logger.error("====================================");
+            logger.error("UNEXPECTED ERROR");
+            logger.error("====================================");
+        }
+        res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
+    } finally {
+        if (conn) await conn.release();
+    }
+});
+
+router.get("/changeMail", async (req, res) => {
+    const { pass } = req.query;
 
     if (pass != process.env.ADMIN_PASS)
 
