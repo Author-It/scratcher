@@ -74,7 +74,7 @@ router.get("/reset/request", async (req, res) => {
     try {   
         conn = await pool.getConnection();
 
-        await conn.query("TRUNCATE TABLE request");
+        await conn.query("TRUNCATE TABLE requests");
         res.send("SUCCESS");
     } catch (error) {
         if (error instanceof Error) {
