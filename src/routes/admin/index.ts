@@ -99,12 +99,12 @@ router.get("/changeMail", async (req, res) => {
     if (pass != process.env.ADMIN_PASS)
 
     try {
-        await req.app.set("emails", await naam());
-        res.send("SUCCESS");
+        req.app.set("emails", await naam());
     } catch (e) {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
     }
+    res.send("SUCCESS");
 });
 
 router.get("/notice", async (req: Request, res: Response) => {
