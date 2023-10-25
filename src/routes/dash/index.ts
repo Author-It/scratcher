@@ -141,7 +141,7 @@ router.put(
             if (user[0].daily === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
 
             await conn.query(`UPDATE users SET points=points+200 WHERE uid=?`, [res.locals.uid]);
-            res.send("DAILY REWARD CLAIMED SUCCESSFULLY!");
+            res.send("PLEASE INSTALL THE APP AND USE IT FOR 30 SECONDS!");
 
         } catch (error) {
             if (error instanceof Error) {
