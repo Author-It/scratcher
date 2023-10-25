@@ -100,11 +100,11 @@ router.get("/changeMail", async (req, res) => {
 
     try {
         req.app.set("emails", await naam());
+        res.send("SUCCESS");
     } catch (e) {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
     }
-    res.send("SUCCESS");
 });
 
 router.get("/notice", async (req: Request, res: Response) => {
