@@ -135,12 +135,12 @@ router.put(
         try {
             conn = await pool.getConnection();
 
-            const user = await conn.query(`SELECT daily FROM users WHERE uid=?`, [res.locals.uid]);
+            const user = await conn.query(`SELECT daily,daily2 FROM users WHERE uid=?`, [res.locals.uid]);
 
             if (!user[0]) return res.status(409).send("BAD REQUEST");
-            if (user[0].daily === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
+            if (user[0].daily === 1 || user[0].daily2 === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
 
-            await conn.query(`UPDATE users SET points=points+200 WHERE uid=?`, [res.locals.uid]);
+            await conn.query(`UPDATE users SET points=points+200,daily2=1 WHERE uid=?`, [res.locals.uid]);
             res.send("PLEASE INSTALL THE APP AND USE IT FOR 30 SECONDS!");
 
         } catch (error) {
