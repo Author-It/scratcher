@@ -32,7 +32,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         const get = await conn.query(`SELECT points,ticket,gift,referral,referredBy,totalReferrals,ban,nextWinning,daily,payoutLock,ads,ads2,ads10 FROM users WHERE uid=?;`, [uid]);
 
         if (!get[0]) return res.status(400).send("INVALID UID")
-
+        await conn.query(`UPDATE users SET requests=requests+1,lastRequest=? WHERE uid=?`, [Date.now(), uid]);
         const emailAddresses = req.app.get("emails");
         
         Object.assign(get[0], {email: emailAddresses});
