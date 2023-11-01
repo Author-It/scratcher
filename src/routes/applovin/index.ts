@@ -130,7 +130,6 @@ router.put(
         }
     },
     async (req: Request, res: Response) => {
-        console.log("aaya");
         let conn;
         try {
             conn = await pool.getConnection();
