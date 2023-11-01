@@ -8,7 +8,6 @@ const logger = require("../../utils/logger.js");
 const router = Router();
 
 router.get("/", async (req, res) => {
-    console.log("ai")
     if (!req.query.amount || !req.query.uid || !req.query.pass) return res.send("INVALID REQUEST FORMAT");
 
     const amount = req.query.amount.toString();
