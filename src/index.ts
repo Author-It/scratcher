@@ -15,13 +15,15 @@ async function main() {
         console.log(err);
     }
 
+    let conn;
     try {
-        pool.getConnection().then((con) => {
-            logger.info("Connected to database.");
-            con.release();
-        });
+        conn = await pool.getConnection();
+
+        logger.event("CONNECTED TO DATABASE");
     } catch (error) {
         logger.error(error)
+    } finally {
+        if (conn) conn.release();
     }
 }
 
