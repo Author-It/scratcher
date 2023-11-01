@@ -17,7 +17,7 @@ router.get("/:uid", async (req, res) => {
     } catch (error) {
         
     } finally {
-        if (conn) await conn.release()
+        if (conn) conn.release()
     }
     res.send(":>")
 });

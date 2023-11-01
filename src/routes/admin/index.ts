@@ -61,7 +61,7 @@ router.get("/reset/day/", async (req, res) => {
         }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 
@@ -89,7 +89,7 @@ router.get("/reset/request", async (req, res) => {
         }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 
@@ -119,7 +119,7 @@ router.get("/notice", async (req: Request, res: Response) => {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 
@@ -135,7 +135,7 @@ router.get("/notice_link", async (req: Request, res: Response) => {
         console.log(e)
         res.status(500).send("INTERNAL SERVER ERROR");
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 

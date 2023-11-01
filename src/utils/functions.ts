@@ -22,7 +22,7 @@ export async function storeHash(hash: string) {
         console.log(err);
         return -1;
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 }
 

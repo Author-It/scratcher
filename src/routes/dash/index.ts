@@ -51,7 +51,7 @@ router.get("/getinfo/:uid", async (req: Request, res: Response) => {
         }
         res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 
@@ -103,7 +103,7 @@ router.put(
             }
             res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
         } finally {
-            if (conn) await conn.release();
+            if (conn) conn.release();
         }
     }
 );
@@ -156,7 +156,7 @@ router.put(
             }
             res.status(500).send("ERROR FEEDING VALUES INTO DATABASE");
         } finally {
-            if (conn) await conn.release();
+            if (conn) conn.release();
         }
     }
 );

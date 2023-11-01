@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
             logger.error("====================================");
         }
     } finally {
-        if (conn) await conn.release();
+        if (conn) conn.release();
     }
 });
 
