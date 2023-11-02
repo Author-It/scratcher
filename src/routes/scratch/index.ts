@@ -49,7 +49,7 @@ router.put(
 
             const nw = get[0].nextWinning;
             const next = getNextAmt(get[0].points);
-
+            console.log("TICKED SCRATCHED BY - " + res.locals.uid);
             await conn.query(`UPDATE users SET points=points+?,ticket=ticket-1,nextWinning=? WHERE uid=?`, [get[0].nextWinning, next, res.locals.uid]);
 
             res.send(`CONGRATULATIONS YOU WON ${nw} POINTS!`);
