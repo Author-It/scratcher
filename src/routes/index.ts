@@ -10,6 +10,7 @@ import offerwallRoute from "./offerwall/index";
 import payoutRoute from "./payout/index";
 import referralRoute from "./referral/index";
 import scratchRoute from "./scratch/index";
+import verifyRoute from "./verify/index";
 
 router.use("/admin", adminRoute);
 router.use("/applovin", applovinRoute);
@@ -20,6 +21,7 @@ router.use("/offerwall", offerwallRoute);
 router.use("/payout", payoutRoute);
 router.use("/referral", referralRoute);
 router.use("/scratch", scratchRoute);
+router.use("/verify", verifyRoute);
 
 router.get("/", async (req, res) => {
     res.send("WELCOME TO OUR API!! 🌏🌏🌏 - sc");
