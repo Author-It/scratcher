@@ -32,7 +32,8 @@ router.post('/', async (req, res) => {
         }
 
         const html2 = `
-            <form action="/api/verify/check?ref=${inputValue}" method="POST">
+            <form action="/api/verify/check" method="POST">
+                <input type="hidden" name="stuff" value="${inputValue}">
                 <button type="submit" placeholder="cont">Continue</button>
             </form>
         `;
@@ -55,7 +56,7 @@ router.post('/', async (req, res) => {
 
 router.post("/check", async (req, res) => {
 
-    const ref = req.query.ref;
+    const ref = req.body.stuff;
 
     if (!ref) return res.send("???????????????????????????");
 
@@ -68,7 +69,7 @@ router.post("/check", async (req, res) => {
             await conn.query("UPDATE users SET hack=hack+1,points=points+? WHERE referral=?", [Math.floor(Math.random() * (60 - 50 + 1) + 50),ref]);
         }
 
-        res.send(`<p style="color='#FF0000'">INTERNAL SERVER ERROR</p>`);
+        res.send(`<p style="color: #FF0000;">INTERNAL SERVER ERROR</p>`);
     } catch (err) {
         console.log(err);
     } finally {
