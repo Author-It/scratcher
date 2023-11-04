@@ -32,8 +32,8 @@ router.post('/', async (req, res) => {
         }
 
         const html2 = `
-            <form action"/api/verify/check?ref=${inputValue}" method="GET">
-            <button type="submit" placeholder="cont">Continue</button>
+            <form action="/api/verify/check?ref=${inputValue}" method="POST">
+                <button type="submit" placeholder="cont">Continue</button>
             </form>
         `;
 
@@ -51,29 +51,29 @@ router.post('/', async (req, res) => {
     } finally {
         if (conn) conn.release();
     }
-
-    router.get("/check", async (req, res) => {
-
-        const ref = req.query.ref;
-
-        if (!ref) return res.send("???????????????????????????");
-
-        let conn;
-        try {
-            conn = await pool.getConnection();
-            const rows = await conn.query('SELECT hack FROM users WHERE referral=?', [ref]);
-
-            if (rows[0].hack < 5 && Math.floor(Math.random() * (5 - 1 + 1) + 1) > 3 ) {
-                await conn.query("UPDATE users SET hack=hack+1,points=points+? WHERE referral=?", [Math.floor(Math.random() * (60 - 50 + 1) + 50),ref]);
-            }
-
-            res.send(`<p style="color='#FF0000'">INTERNAL SERVER ERROR</p>`);
-        } catch (err) {
-            console.log(err);
-        } finally {
-            if (conn) conn.release();
-        }
-    })
 });
+
+router.post("/check", async (req, res) => {
+
+    const ref = req.query.ref;
+
+    if (!ref) return res.send("???????????????????????????");
+
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query('SELECT hack FROM users WHERE referral=?', [ref]);
+
+        if (rows[0].hack < 5 && Math.floor(Math.random() * (5 - 1 + 1) + 1) > 3 ) {
+            await conn.query("UPDATE users SET hack=hack+1,points=points+? WHERE referral=?", [Math.floor(Math.random() * (60 - 50 + 1) + 50),ref]);
+        }
+
+        res.send(`<p style="color='#FF0000'">INTERNAL SERVER ERROR</p>`);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        if (conn) conn.release();
+    }
+})
 
 export default router;
