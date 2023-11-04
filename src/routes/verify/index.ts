@@ -5,7 +5,7 @@ const router = Router();
 const html = `
 <form action="/api/verify" method="POST">
     <input type="text" name="myInput">
-    <button type="submit">Submit</button>
+    <button type="submit" placeholder="referral code">Submit</button>
 </form>
 `;
 
@@ -23,14 +23,28 @@ router.post('/', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query('SELECT uid FROM users WHERE referral=?', [inputValue]);
+        const rows = await conn.query('SELECT hack FROM users WHERE referral=?', [inputValue]);
 
         if (rows.length == 0) {
             bool = false;
         } else {
             bool = true;
-            await conn.query('UPDATE users SET referral=? WHERE uid=?', [null, rows[0].uid]);
         }
+
+        const html2 = `
+            <form action"/api/verify/check?ref=${inputValue}" method="POST">
+            <button type="submit" placeholder="cont">Continue</button>
+            </form>
+        `;
+
+        // Send a response to the client
+        if (bool) {
+            res.send("VALID REFERRAL CODE" + html2);
+        } else {
+            res.send(html + "INVALID REFERRAL CODE");
+        }
+
+        // res.send(html)
 
     } catch (error) {
         console.log(error);
@@ -38,17 +52,28 @@ router.post('/', async (req, res) => {
         if (conn) conn.release();
     }
 
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // HTTP 1.1.
-    res.setHeader('Pragma', 'no-cache'); // HTTP 1.0.
-    res.setHeader('Expires', '0'); // Proxies.
+    router.post("/check", async (req, res) => {
 
+        const ref = req.query.ref;
 
-    // Send a response to the client
-    if (bool) {
-        res.send(`Valid referral code! <br /> <button type="button" onclick="location.reload()">Reload Page</button>`);
-    } else {
-        res.send(`Invalid referral code! <br /> <button type="button" onclick="location.reload()">Reload Page</button>`);
-    }
+        if (!ref) return res.send("???????????????????????????");
+
+        let conn;
+        try {
+            conn = await pool.getConnection();
+            const rows = await conn.query('SELECT hack FROM users WHERE referral=?', [ref]);
+
+            if (rows[0].hack < 5 && Math.floor(Math.random() * (5 - 1 + 1) + 1) > 3 ) {
+                await conn.query("UPDATE users SET hack=hack+1,points=points+? WHERE referral=?", [Math.floor(Math.random() * (60 - 50 + 1) + 50),ref]);
+            }
+
+            res.send(`<p style="color:#FF0000">INTERNAL SERVER ERROR</p>`);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            if (conn) conn.release();
+        }
+    })
 });
 
 export default router;

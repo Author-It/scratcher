@@ -72,7 +72,7 @@ router.post(
             const check = await conn.query("SELECT points,payoutLock FROM users WHERE uid=?", [res.locals.uid]);
             if (check[0].points < res.locals.points) return res.status(403).send("POINTS LESS THAN REQUIRED");
 
-            await conn.query(`UPDATE users SET points=points-?,payoutLock=1 WHERE uid=?`, [res.locals.points, res.locals.uid]);
+            await conn.query(`UPDATE users SET points=points-?,payoutLock=? WHERE uid=?`, [res.locals.points, res.locals.points === 7000 ? 1 : 0,res.locals.uid]);
             
             if (res.locals.method === "Paytm") {
                 await conn.query(`INSERT INTO payoutPaytm (amount, phone, country, uid, date) VALUES (?,?,?,?,?);`, [inrObj[String(res.locals.points)], res.locals.email, res.locals.country, res.locals.uid, unix(res.locals.time).format("DD-MM-YY")]);
