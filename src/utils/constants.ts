@@ -78,6 +78,7 @@ export const weightedProbabilities = {
     78: 0.005,
     80: 0.005
 };
+
 export const weightedProbabilities100 = {
     10: 0.15,
     12: 0.12,
