@@ -59,10 +59,10 @@ export function getNextAmt(points: number) {
 
     if (points < 4500) {
         a = weightedRand2(weightedProbabilities);
-        if (a === undefined) a = 32;
+        if (a === undefined) a = 52;
     } else {
         a = weightedRand2(weightedProbabilities100);
-        if (a === undefined) a = 12;
+        if (a === undefined) a = 32;
     }
 
     return a;

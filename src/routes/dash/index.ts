@@ -87,8 +87,8 @@ router.put(
             if (!user[0]) return res.status(409).send("BAD REQUEST");
             if (user[0].daily === 1) return res.status(403).send("DAILY REWARD ALREADY CLAIMED");
 
-            await conn.query(`UPDATE users SET points=points+200,daily=1 WHERE uid=?`, [res.locals.uid]);
-            res.send("DAILY REWARD CLAIMED SUCCESSFULLY!");
+            await conn.query(`UPDATE users SET points=points+700,daily=1 WHERE uid=?`, [res.locals.uid]);
+            res.send("700 POINTS CLAIMED!");
 
         } catch (error) {
             if (error instanceof Error) {
