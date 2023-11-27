@@ -76,7 +76,7 @@ router.get("/tickets_5", async (req: Request, res: Response) => {
 
     if (toCheck != eventToken) {
         res.status(400).send("Bad Request");
-        logger.warn("Bad SHA");
+        logger.warn("UPDATE THE APP TO CLAIM");
         return;
     };
 
@@ -90,6 +90,7 @@ router.get("/tickets_5", async (req: Request, res: Response) => {
         if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`);
 
         await conn.query(`UPDATE users SET ticket=ticket+20,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now() / 1000) + 3600, userID]);
+        console.log("20 TICKETS CLAIMED!");
         res.send("REWARD CLAIMED!");
     } catch (error) {
         if (error instanceof Error) {
