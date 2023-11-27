@@ -45,6 +45,7 @@ router.put(
             if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`)
 
             await conn.query(`UPDATE users SET ticket=ticket+10,ads=?,totalAds=totalAds+1,ads20=ads20+1,waitingTime = waitingTime + ? WHERE uid=?`, [parseInt((Date.now() / 1000).toString()) + r[0].waitingTime, (r[0].ads20 > 50 ? 20 : 0), res.locals.uid]);
+            console.log("10 TICKETS CLAIMED - " + res.locals.uid);
             res.send("REWARD CLAIMED!");
         } catch (error) {
             if (error instanceof Error) {
@@ -90,7 +91,7 @@ router.get("/tickets_5", async (req: Request, res: Response) => {
         if (aa < r[0].ads) return res.status(403).send(`YOU MUST WAIT ${r[0].ads - aa} SECONDS MORE!`);
 
         await conn.query(`UPDATE users SET ticket=ticket+20,ads2=?,totalAds2=totalAds2+1 WHERE uid=?`, [(Date.now() / 1000) + 3600, userID]);
-        console.log("20 TICKETS CLAIMED!");
+        console.log("20 TICKETS CLAIMED - " + userID);
         res.send("REWARD CLAIMED!");
     } catch (error) {
         if (error instanceof Error) {
@@ -140,6 +141,7 @@ router.put(
             if (aa < r[0].ads10) return res.status(403).send(`YOU MUST WAIT ${r[0].ads10 - aa} SECONDS MORE!`)
 
             await conn.query(`UPDATE users SET ads10=?,totalAds10=totalAds10+1, points = points + 50 WHERE uid=?`, [parseInt((Date.now() / 1000).toString()) + 600, res.locals.uid]);
+            console.log("50 POINTS CLAIMED - " + res.locals.uid)
             res.send("REWARD CLAIMED!");
         } catch (error) {
             if (error instanceof Error) {
