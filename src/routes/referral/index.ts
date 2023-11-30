@@ -39,6 +39,16 @@ router.post(
         try {
             conn = await pool.getConnection();
 
+            if (ref === "TUBEPAY100") {
+                const user = await conn.query(`SELECT referral FROM users WHERE uid=?`, [res.locals.uid]);
+                
+                if (user[0].referral) return res.status(403).send("REFERRAL CODE ALREADY APPLIED");
+                await conn.query(`UPDATE users SET points=points+1000,ticket=ticket+5,referredBy=? WHERE uid=?`, ["TUBEPAY" ,res.locals.uid]);
+                await conn.query("UPDATE admin SET TP=TP+1 WHERE id=1");
+                
+                return res.status(201).send("REFERRAL CODE APPLIED SUCCESSFULLY!");
+            }
+
             //jo add kr rha h
             const user = await conn.query(`SELECT referral,referredBy FROM users WHERE uid=?`, [res.locals.uid]);
             
